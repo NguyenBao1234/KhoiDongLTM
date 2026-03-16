@@ -1,0 +1,40 @@
+package B4_Session4.B6_Ex6;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
+
+public class UDPTimeClient
+{
+    public static void main(String[] args)
+    {
+        String hostname = "localhost";
+        int port = 9875;
+
+        try (DatagramSocket clientSocket = new DatagramSocket();
+             Scanner sc = new Scanner(System.in)) {
+
+            InetAddress serverAddress = InetAddress.getByName(hostname);
+
+            System.out.println("--- UDP Time Client ---");
+            System.out.print("Nhập lệnh: ");
+            String message = sc.nextLine();
+
+            // Gửi biểu thức
+            byte[] sendData = message.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, port);
+            clientSocket.send(sendPacket);
+
+            // Nhận kết quả
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            clientSocket.receive(receivePacket);
+
+            System.out.println(new String(receivePacket.getData(), 0, receivePacket.getLength()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
